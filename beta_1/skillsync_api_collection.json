@@ -1,0 +1,294 @@
+{
+  "info": {
+    "name": "SkillSync API",
+    "description": "API collection for SkillSync HR platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register HR User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/hr/register/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "hr", "register", ""]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"hr_user\",\n    \"email\": \"hr@company.com\",\n    \"password\": \"your_password\",\n    \"company_name\": \"Your Company\",\n    \"company_size\": \"100-500\",\n    \"company_website\": \"https://company.com\",\n    \"company_linkedin_url\": \"https://linkedin.com/company/your-company\",\n    \"company_location\": \"City, Country\"\n}"
+            },
+            "description": "Register a new HR user with company details"
+          }
+        },
+        {
+          "name": "Login HR User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/hr/login/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "hr", "login", ""]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"hr_user\",\n    \"password\": \"your_password\"\n}"
+            },
+            "description": "Login as HR user and get authentication token"
+          }
+        },
+        {
+          "name": "Logout HR User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/hr/logout/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "hr", "logout", ""]
+            },
+            "description": "Logout HR user and invalidate token"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Candidate Management",
+      "item": [
+        {
+          "name": "List Candidates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/candidates/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "candidates", ""]
+            },
+            "description": "Get list of all candidates for the company"
+          }
+        },
+        {
+          "name": "Get Candidate Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/candidates/{{candidate_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "candidates", "{{candidate_id}}", ""]
+            },
+            "description": "Get detailed information about a specific candidate"
+          }
+        },
+        {
+          "name": "Update Candidate Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/candidates/{{candidate_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "candidates", "{{candidate_id}}", ""]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"SELECTED\",\n    \"status_notes\": \"Candidate selected for next round\"\n}"
+            },
+            "description": "Update candidate status and add notes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resume & Profile Management",
+      "item": [
+        {
+          "name": "Upload Resume",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/resume/upload/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "resume", "upload", ""]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "resume_file",
+                  "type": "file",
+                  "src": "/path/to/resume.pdf"
+                }
+              ]
+            },
+            "description": "Upload and parse a candidate's resume"
+          }
+        },
+        {
+          "name": "LinkedIn Search",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/linkedin/search/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "linkedin", "search", ""]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"query\": \"Python Developer with 5 years experience\"\n}"
+            },
+            "description": "Search for candidates on LinkedIn based on query"
+          }
+        },
+        {
+          "name": "Scrape LinkedIn Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/linkedin/profile/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "linkedin", "profile", ""]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"linkedin_url\": \"https://www.linkedin.com/in/username\"\n}"
+            },
+            "description": "Scrape and analyze a LinkedIn profile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard & Search",
+      "item": [
+        {
+          "name": "Get HR Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/dashboard/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "dashboard", ""]
+            },
+            "description": "Get dashboard summary for HR user"
+          }
+        },
+        {
+          "name": "Search Candidates by JD",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/skillsync/search/candidates/",
+              "host": ["{{base_url}}"],
+              "path": ["skillsync", "search", "candidates", ""]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"query\": \"Looking for a senior Python developer with Django experience\"\n}"
+            },
+            "description": "Search for candidates based on job description"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "your_auth_token_here",
+      "type": "string"
+    },
+    {
+      "key": "candidate_id",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+} 

@@ -1,0 +1,268 @@
+{
+    "info": {
+        "name": "SkillSync API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Register HR User",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/skillsync/hr/register/",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"hr_user\",\n    \"email\": \"hr@company.com\",\n    \"password\": \"your_password\",\n    \"company_name\": \"Your Company\",\n    \"company_size\": \"100-500\",\n    \"company_website\": \"https://company.com\",\n    \"company_linkedin_url\": \"https://linkedin.com/company/your-company\",\n    \"company_location\": \"City, Country\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Login HR User",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/skillsync/hr/login/",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"hr_user\",\n    \"password\": \"your_password\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Logout HR User",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/skillsync/hr/logout/",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Token {{auth_token}}"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Candidate Management",
+            "item": [
+                {
+                    "name": "List All Candidates",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/skillsync/candidates/",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Token {{auth_token}}"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "Create New Candidate",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/skillsync/candidates/",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Token {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"phone\": \"+1234567890\",\n    \"linkedin_url\": \"https://linkedin.com/in/johndoe\",\n    \"github_url\": \"https://github.com/johndoe\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Get/Update Candidate",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/skillsync/candidates/{{candidate_id}}/",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Token {{auth_token}}"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Resume & Profile Management",
+            "item": [
+                {
+                    "name": "Upload Resume",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/skillsync/resume/upload/",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Token {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "resume_file",
+                                    "type": "file",
+                                    "src": "/path/to/resume.pdf"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "LinkedIn Search",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/skillsync/linkedin/search/",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Token {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"query\": \"python developer with 5 years experience\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Scrape LinkedIn Profile",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/skillsync/linkedin/profile/",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Token {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"linkedin_url\": \"https://linkedin.com/in/profile-id\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Dashboard & Search",
+            "item": [
+                {
+                    "name": "Get HR Dashboard",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/skillsync/dashboard/",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Token {{auth_token}}"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "Search Candidates by JD",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/skillsync/search/candidates/",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Token {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"query\": \"Senior Python Developer with Django experience\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "AI Analysis",
+            "item": [
+                {
+                    "name": "Generate Candidate Analysis",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/skillsync/analysis/generate/",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Token {{auth_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"candidate_id\": \"{{candidate_id}}\",\n    \"job_description\": \"Senior Python Developer with experience in Django, REST APIs, and cloud platforms. Must have 5+ years of experience.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000"
+        },
+        {
+            "key": "auth_token",
+            "value": "your_auth_token_here"
+        },
+        {
+            "key": "candidate_id",
+            "value": "123"
+        }
+    ]
+} 

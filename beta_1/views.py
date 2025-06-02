@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Candidate, Experience, Skill, CandidateSkill, Project, AISummary
+from .models import Candidate, Experience, Skill, CandidateSkill, Project, AISummary, LinkedInProfile
 from .serializers import CandidateSerializer, ExperienceSerializer, SkillSerializer, CandidateSkillSerializer, ProjectSerializer, AISummarySerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,7 +18,14 @@ from dateutil import parser
 import datetime
 from beta_1 import JD_parse
 from beta_1.JD_parse import calculate_total_experience
+from beta_1.JD_scrape import search_and_store_profiles
+import http.client
+import json
+from google import genai
+from dotenv import load_dotenv
+import re
 
+load_dotenv()
 
 def my_view(request):
     return render(request, "index.html")
@@ -224,5 +231,18 @@ class CandidateSummaryView(APIView):
             return Response({'summary_text': summary.summary_text})
         except AISummary.DoesNotExist:
             return Response({'error': 'Summary not found.'}, status=404)
+
+class JDScraperView(APIView):
+    def post(self, request):
+        # Get the job description or search query from the request
+        jd_content = request.data.get('query', '')
+        
+        # Use the search_and_store_profiles function to search and store results
+        result = search_and_store_profiles(jd_content)
+        
+        if 'error' in result:
+            return Response(result, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+        return Response(result)
 
 
