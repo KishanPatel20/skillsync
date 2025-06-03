@@ -200,7 +200,7 @@ def search_and_store_profiles(jd_content: str, company=None):
                     })
         
         return data  # Return the complete Serper API response
-
+        
     except Exception as e:
         print(f"Error in search_and_store_profiles: {str(e)}")
         return {'error': f'Error processing request: {str(e)}'}

@@ -129,8 +129,8 @@ def register_user(request):
             return Response({
                 'message': 'User registered successfully',
                 'token': token.key,
-                'username': user.username,
-                'user_id': user.id,
+                    'username': user.username,
+                    'user_id': user.id,
                 'company_id': company.id,
                 'company_name': company.name
             }, status=status.HTTP_201_CREATED)
@@ -142,7 +142,7 @@ def register_user(request):
     except IntegrityError:
         return Response({'error': 'Username or email already exists'}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
-        return Response({'error': f'Registration failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': f'Registration failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])
@@ -223,7 +223,7 @@ class CandidateListCreateView(APIView):
         if serializer.is_valid():
             candidate = serializer.save()
             ActivityLog.objects.create(
-                user=request.user,
+                    user=request.user,
                 company=request.user.hr_profile.company,
                 activity_type='CANDIDATE_CREATE',
                 details_json={
@@ -231,7 +231,7 @@ class CandidateListCreateView(APIView):
                     'candidate_name': candidate.name,
                     'candidate_email': candidate.email
                 }
-            )
+                )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -381,7 +381,7 @@ def upload_resume_api(request):
         candidate.projects.all().delete()
         for proj in extracted_data.projects or []:
             Project.objects.create(
-                candidate=candidate,
+                    candidate=candidate,
                 name=proj.project_name or '',
                 description=proj.description or ''
             )
@@ -554,17 +554,36 @@ def scrape_and_analyze_linkedin_profile_api(request):
                 candidate = Candidate.objects.get(company=hr_company, name=profile_data.get('fullName', 'N/A'))
                 is_new = False
             except Candidate.DoesNotExist:
-                # Create new candidate if not found
-                candidate = Candidate.objects.create(
-                    company=hr_company,
-                    name=profile_data.get('fullName', 'N/A'),
-                    phone='',
-                    linkedin_url=linkedin_url,
-                    status='NEW',
-                    last_status_update=timezone.now(),
-                    created_by=user  # Add the created_by field
-                )
-                is_new = True
+                # If not found by name, try to find by email (if available)
+                email = profile_data.get('emailAddress')
+                if email:
+                    try:
+                        candidate = Candidate.objects.get(company=hr_company, email=email)
+                        is_new = False
+                    except Candidate.DoesNotExist:
+                        # Create new candidate if not found by email
+                        candidate = Candidate.objects.create(
+                            company=hr_company,
+                            name=profile_data.get('fullName', 'N/A'),
+                            phone='',
+                            linkedin_url=linkedin_url,
+                            status='NEW',
+                            last_status_update=timezone.now(),
+                            created_by=user
+                        )
+                        is_new = True
+                else:
+                    # Create new candidate if no email to check
+                    candidate = Candidate.objects.create(
+                        company=hr_company,
+                        name=profile_data.get('fullName', 'N/A'),
+                        phone='',
+                        linkedin_url=linkedin_url,
+                        status='NEW',
+                        last_status_update=timezone.now(),
+                        created_by=user
+                    )
+                    is_new = True
 
         # Update candidate details
         candidate.name = profile_data.get('fullName', candidate.name)
@@ -618,8 +637,8 @@ def scrape_and_analyze_linkedin_profile_api(request):
                     'experience_count': len(profile_data.get('experience', [])),
                     'education_count': len(profile_data.get('education', []))
                 }
-            }
-        )
+                }
+            )
 
         return Response(
             {
@@ -710,6 +729,7 @@ def generate_candidate_analysis(request):
     """
     try:
         candidate_id = request.data.get('candidate_id')
+        print(candidate_id)
         job_description = request.data.get('job_description')
         if not candidate_id or not job_description:
             return Response(
@@ -727,6 +747,7 @@ def generate_candidate_analysis(request):
                 status=status.HTTP_404_NOT_FOUND
             )
         analysis = get_candidate_analysis(candidate, job_description)
+        print("Analysis result:", analysis)
         print(analysis)
         if not analysis:
             return Response(

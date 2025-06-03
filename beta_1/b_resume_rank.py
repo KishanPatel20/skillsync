@@ -13,6 +13,7 @@ load_dotenv()
 # These models define the expected JSON output structure that the LLM should follow.
 # This structure is also described in the prompt to guide the LLM.
 api_key = os.getenv("GEMINI_API")
+print(api_key)
 
 class SkillMatch(BaseModel):
     skill_name: str = None
@@ -69,7 +70,7 @@ def generate_ai_summary(jd_content: str, resume_content: str, candidate: Candida
         candidate=candidate,
         job_description_hash=jd_hash
     ).first()
-    
+    print("Existing Summary ",existing_summary)
     if existing_summary:
         return existing_summary
     
@@ -175,7 +176,7 @@ def get_candidate_analysis(candidate: Candidate, jd_content: str) -> Optional[AI
             except Exception as e:
                 print(f"Error gathering candidate details from database: {str(e)}")
                 resume_content = ""
-        
+        print(f"Resume content for {candidate.name}: {resume_content}")
         # Generate new analysis
         return generate_ai_summary(
             jd_content=jd_content,
@@ -190,6 +191,7 @@ def get_candidate_analysis(candidate: Candidate, jd_content: str) -> Optional[AI
 
 def extract_jd_requirements(jd_content: str, resume_content: str):
     client = genai.Client(api_key=api_key)
+    print("api" , api_key)
     prompt = f"""
     ou are an expert AI Talent Acquisition Assistant specializing in the IT industry. Your primary function is to conduct a comprehensive and unbiased analysis of a candidate's profile or resume against a specific Job Description (JD).
 
@@ -291,7 +293,7 @@ Your entire response MUST be a single, valid JSON object. Do NOT include any int
                 "response_schema": CandidateAnalysisResponse,
             },
         )
-        # print(response.text)
+        print(response)
         # print(resume_content)
         return response.parsed
     except Exception as e:
